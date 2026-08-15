@@ -92,6 +92,58 @@ def show_prompt_list():
     print(f"\n총 {len(prompts)}개의 프롬프트")
 
 
+def show_by_category():
+    print("\n=== 카테고리별 조회 ===")
+
+    categories = [
+        "텍스트 생성",
+        "이미지 생성",
+        "영상 생성",
+        "페르소나",
+        "자동화",
+        "기타"
+    ]
+
+    for prompt in prompts:
+        if prompt["category"] not in categories:
+            categories.append(prompt["category"])
+
+    for index, category in enumerate(categories, start=1):
+        print(f"{index}) {category}")
+
+    choice = input("선택: ").strip()
+
+    if not choice.isdigit():
+        print("잘못된 입력입니다. 번호를 입력해주세요.")
+        return
+
+    category_number = int(choice)
+
+    if category_number < 1 or category_number > len(categories):
+        print("잘못된 번호입니다.")
+        return
+
+    selected_category = categories[category_number - 1]
+
+    filtered_prompts = [
+        prompt
+        for prompt in prompts
+        if prompt["category"] == selected_category
+    ]
+
+    print(f"\n[{selected_category}] 카테고리 프롬프트:")
+
+    if not filtered_prompts:
+        print("해당 카테고리에 등록된 프롬프트가 없습니다.")
+        return
+
+    for index, prompt in enumerate(filtered_prompts, start=1):
+        favorite_mark = " ⭐" if prompt["favorite"] else ""
+        print(f"{index}. {prompt['title']}{favorite_mark}")
+
+    print(f"\n총 {len(filtered_prompts)}개의 프롬프트")
+
+
 def show_menu():
     print("\n=== 나만의 프롬프트 관리 ===")
     print("1. 프롬프트 추가")
@@ -118,7 +170,9 @@ def main():
             add_prompt()
         elif choice == "2":
             show_prompt_list()
-        elif choice in ["3", "4", "5", "6", "7"]:
+        elif choice == "3":
+            show_by_category()
+        elif choice in ["4", "5", "6", "7"]:
             print("아직 준비 중인 기능입니다.")
         else:
             print("잘못된 번호입니다. 0부터 7 사이의 번호를 입력해주세요.")
